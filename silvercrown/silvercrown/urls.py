@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 from django.http import HttpResponse
 
 def home(request):
-    return HttpResponse("Welcome to Silver Crown Creation!")
+     return HttpResponse("<h1>Welcome to Silver Crown Creation</h1><p>Visit <a href='/api/products/'>Products</a></p>")
+
 
 urlpatterns = [
     path('', home),  # Handles /
