@@ -175,15 +175,21 @@ async function loadProduct(index) {
   document.getElementById("main-images").innerHTML = `<img src="${product.thumbnail}" id="main-image" />`;
 
   const thumbs = document.getElementById("thumbs");
-  thumbs.innerHTML = '';
-  product.images?.forEach(img => {
-    if (img.image !== product.thumbnail) {
-      const thumb = document.createElement("div");
-      thumb.className = "pro-nav-thumb";
-      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
-      thumbs.appendChild(thumb);
-    }
-  });
+thumbs.innerHTML = '';
+
+const thumbnailUrl = decodeURIComponent(product.thumbnail.trim());
+
+product.images?.forEach(img => {
+  const imgUrl = decodeURIComponent(img.image.trim());
+
+  if (imgUrl !== thumbnailUrl) {
+    const thumb = document.createElement("div");
+    thumb.className = "pro-nav-thumb";
+    thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
+    thumbs.appendChild(thumb);
+  }
+});
+
 
   const stars = Math.round(product.rating);
   document.getElementById("rating-stars").innerHTML =
