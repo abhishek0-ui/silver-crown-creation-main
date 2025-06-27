@@ -174,14 +174,14 @@ async function loadProduct(index) {
   document.getElementById("stock").textContent = product.stock;
   document.getElementById("main-images").innerHTML = `<img src="${product.thumbnail}" id="main-image" />`;
 
-  const thumbs = document.getElementById("thumbs");
-  thumbs.innerHTML = '';
-  product.images?.forEach(img => {
-    const thumb = document.createElement("div");
-    thumb.className = "pro-nav-thumb";
-    thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
-    thumbs.appendChild(thumb);
-  });
+ const thumbs = document.getElementById("thumbs");
+thumbs.innerHTML = '';
+product.images?.forEach(img => {
+  const thumb = document.createElement("div");
+  thumb.className = "pro-nav-thumb";
+  thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
+  thumbs.appendChild(thumb);
+});
 
   const stars = Math.round(product.rating);
   document.getElementById("rating-stars").innerHTML =
