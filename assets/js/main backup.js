@@ -30,6 +30,7 @@
 
 
 	///shoppage and product  page js start here
+// Updated Product Page Script
 let products = [];
 
 const API_URL = "https://silver-crown-creation-main-1.onrender.com/api/products/";
@@ -116,11 +117,9 @@ function generateShopCards(filteredList = products) {
     container.appendChild(card);
   });
 
-  // Initialize add to cart buttons after generating cards
   setupAddToCartButtons();
 }
 
-// Setup add to cart functionality for shop page
 function setupAddToCartButtons() {
   document.addEventListener('click', function(e) {
     const button = e.target.closest('.add-to-cart-btn');
@@ -132,7 +131,6 @@ function setupAddToCartButtons() {
   });
 }
 
-// Add product to cart (shared function)
 function addProductToCart(index) {
   if (!products[index]) return;
 
@@ -146,10 +144,7 @@ function addProductToCart(index) {
   );
 
   if (existingIndex === -1) {
-    cart.push({ 
-      ...product, 
-      quantity: 1 
-    });
+    cart.push({ ...product, quantity: 1 });
   } else {
     cart[existingIndex].quantity += 1;
   }
@@ -158,19 +153,13 @@ function addProductToCart(index) {
   window.location.href = 'cart.html';
 }
 
-// Setup filters for shop page
 function setupFilters() {
   const sizeCheckboxes = document.querySelectorAll(".size-filter");
   const colorCheckboxes = document.querySelectorAll(".color-filter");
 
   function updateFilters() {
-    const selectedSizes = Array.from(sizeCheckboxes)
-      .filter(cb => cb.checked)
-      .map(cb => cb.value);
-
-    const selectedColors = Array.from(colorCheckboxes)
-      .filter(cb => cb.checked)
-      .map(cb => cb.value);
+    const selectedSizes = Array.from(sizeCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+    const selectedColors = Array.from(colorCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
 
     let filtered = products;
 
@@ -189,41 +178,34 @@ function setupFilters() {
   colorCheckboxes.forEach(cb => cb.addEventListener("change", updateFilters));
 }
 
-// ✅ Load product details with image from `product.images`
 async function loadProduct(index) {
   if (!products[index]) return;
 
   const product = products[index];
-  
-  // ✅ Use first product image (not thumbnail)
-  const mainImage = product.images?.length ? product.images[0].image : 'assets/images/placeholder.jpg';
-  document.getElementById("main-images").innerHTML = `<img src="${mainImage}" id="main-image" />`;
 
-  // ✅ Populate thumbnails (excluding first image)
-  const thumbs = document.getElementById("thumbs");
-  thumbs.innerHTML = '';
-  if (product.images && product.images.length > 0) {
-    product.images.forEach((img, i) => {
-      if (i === 0) return;
-      const thumb = document.createElement("div");
-      thumb.className = "pro-nav-thumb";
-      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
-      thumbs.appendChild(thumb);
-    });
-  }
-
-  // Basic info
   document.getElementById("product-name").textContent = product.name;
   document.getElementById("price").textContent = "₹" + product.price;
   document.getElementById("description").textContent = product.description || 'No description available';
   document.getElementById("stock").textContent = product.stock || 'In Stock';
 
-  // Rating
+  const mainImage = product.images?.[0]?.image || product.thumbnail || 'assets/images/placeholder.jpg';
+  document.getElementById("main-images").innerHTML = `<img src="${mainImage}" id="main-image" />`;
+
+  const thumbs = document.getElementById("thumbs");
+  thumbs.innerHTML = '';
+  if (product.images && product.images.length > 0) {
+    product.images.forEach((img, i) => {
+      const thumb = document.createElement("div");
+      thumb.className = "pro-nav-thumb";
+      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" ${i === 0 ? 'class="active"' : ''} />`;
+      thumbs.appendChild(thumb);
+    });
+  }
+
   const stars = Math.min(5, Math.max(0, Math.round(product.rating || 0)));
   document.getElementById("rating-stars").innerHTML =
     '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
 
-  // WhatsApp
   const rawNumber = product.whatsapp || '';
   const phone = rawNumber.replace(/[^0-9]/g, '');
   const whatsappBtn = document.getElementById("enquire-btn");
@@ -234,7 +216,6 @@ async function loadProduct(index) {
     whatsappBtn.style.display = 'none';
   }
 
-  // Add to cart from product-details
   const detailsAddToCartBtn = document.getElementById('details-add-to-cart-btn');
   if (detailsAddToCartBtn) {
     detailsAddToCartBtn.onclick = (e) => {
@@ -244,7 +225,6 @@ async function loadProduct(index) {
   }
 }
 
-// Thumbnail click handling
 function setupThumbnailNavigation() {
   const thumbsContainer = document.getElementById("thumbs");
   if (thumbsContainer) {
@@ -259,7 +239,6 @@ function setupThumbnailNavigation() {
   }
 }
 
-// WhatsApp sharing setup
 function setupWhatsAppButton() {
   const whatsappBtn = document.getElementById('whatsapp-btn');
   if (whatsappBtn) {
@@ -271,7 +250,6 @@ function setupWhatsAppButton() {
   }
 }
 
-// Create WhatsApp message from cart
 function generateWhatsAppLink(cart) {
   if (!cart.length) {
     alert('Your cart is empty!');
@@ -293,7 +271,6 @@ function generateWhatsAppLink(cart) {
   window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
 }
 
-// Initialize on DOM ready
 document.addEventListener("DOMContentLoaded", () => {
   loadProductsFromAPI();
   setupThumbnailNavigation();
