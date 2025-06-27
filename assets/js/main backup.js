@@ -56,7 +56,7 @@ async function loadProductsFromAPI() {
     if (detailPage) {
       const savedIndex = localStorage.getItem("productIndex");
       if (savedIndex !== null) {
-        await loadProduct(savedIndex);
+        loadProduct(savedIndex);
       }
     }
   } catch (error) {
@@ -67,6 +67,7 @@ async function loadProductsFromAPI() {
 function generateShopCards(filteredList = products) {
   const container = document.getElementById("shop-products");
   if (!container) return;
+
   container.innerHTML = '';
 
   filteredList.forEach((product, index) => {
@@ -132,13 +133,19 @@ function setupAddToCartButtons() {
   });
 }
 
+
 function setupFilters() {
   const sizeCheckboxes = document.querySelectorAll(".size-filter");
   const colorCheckboxes = document.querySelectorAll(".color-filter");
 
   function updateFilters() {
-    const selectedSizes = Array.from(sizeCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
-    const selectedColors = Array.from(colorCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+    const selectedSizes = Array.from(sizeCheckboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value);
+
+    const selectedColors = Array.from(colorCheckboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value);
 
     let filtered = products;
 
@@ -158,7 +165,6 @@ function setupFilters() {
 }
 
 async function loadProduct(index) {
-  if (!products.length) products = await fetchProducts();
   const product = products[index];
   if (!product) return;
 
@@ -168,43 +174,45 @@ async function loadProduct(index) {
   document.getElementById("stock").textContent = product.stock;
   document.getElementById("main-images").innerHTML = `<img src="${product.thumbnail}" id="main-image" />`;
 
-  const thumbs = document.getElementById("thumbs");
-  thumbs.innerHTML = '';
-  product.images?.forEach(img => {
-    if (img.image !== product.thumbnail) {
-      const thumb = document.createElement("div");
-      thumb.className = "pro-nav-thumb";
-      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
-      thumbs.appendChild(thumb);
-    }
-  });
+ const thumbs = document.getElementById("thumbs");
+thumbs.innerHTML = '';
+product.images?.forEach(img => {
+  const thumb = document.createElement("div");
+  thumb.className = "pro-nav-thumb";
+  thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
+  thumbs.appendChild(thumb);
+});
 
   const stars = Math.round(product.rating);
   document.getElementById("rating-stars").innerHTML =
     '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
 
-  const btn = document.getElementById("enquire-btn");
-  btn.onclick = function (e) {
+  const rawNumber = product.whatsapp || '';
+  const phone = rawNumber.replace(/[^0-9]/g, '');
+  document.getElementById("enquire-btn").href = `https://wa.me/${phone}`;
+
+  const enquireBtn = document.getElementById("enquire-btn");
+  enquireBtn.dataset.index = index;
+
+  enquireBtn.addEventListener("click", function (e) {
     e.preventDefault();
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
     const existing = cart.find(
       (item) => item.name === product.name && item.size === product.size && item.color === product.color
     );
+
     if (!existing) {
       cart.push({ ...product, quantity: 1 });
-      localStorage.setItem("cart", JSON.stringify(cart));
     }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
     window.location.href = "cart.html";
-  };
+  });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadProductsFromAPI();
-
-  const index = localStorage.getItem("productIndex");
-  if (index !== null) {
-    await loadProduct(index);
-  }
+document.addEventListener("DOMContentLoaded", () => {
+  loadProductsFromAPI();
 
   const thumbsContainer = document.getElementById("thumbs");
   if (thumbsContainer) {
@@ -227,6 +235,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
+
+
 
 
 
