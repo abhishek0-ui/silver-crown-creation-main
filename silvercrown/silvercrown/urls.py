@@ -2,14 +2,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.http import HttpResponse
-
-def home(request):
-     return HttpResponse("<h1>Welcome to Silver Crown Creation</h1><p>Visit <a href='/api/products/'>Products</a></p>")
-
+from shop.views import product_page  # ✅ Import the product_page view
 
 urlpatterns = [
-    path('', home),  # Handles /
+    path('', product_page),  # ✅ Renders the product list at /
     path('admin/', admin.site.urls),
     path('api/', include('shop.urls')),
 ]
