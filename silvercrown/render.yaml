@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: silver-crown
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn silvercrown.wsgi:application --timeout 600
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: silvercrown.settings
+      - key: CLOUDINARY_URL
+        value: cloudinary://482223615416434:e626xw1CJP6U-Lz9Ok6lZslXQZo@djcb1ujkt
+      - key: DJANGO_SECRET_KEY
+        value: your-very-secret-key-here
+      - key: DJANGO_DEBUG
+        value: False
