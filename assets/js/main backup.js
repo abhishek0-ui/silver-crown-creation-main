@@ -34,25 +34,29 @@ let products = [];
 
 const API_URL = "https://silver-crown-creation-main-1.onrender.com/api/products/";
 
+async function fetchProducts() {
+  const res = await fetch(API_URL);
+  return await res.json();
+}
+
 async function loadProductsFromAPI() {
   try {
     const response = await fetch(API_URL);
     products = await response.json();
 
     const shopPage = document.getElementById("shop-products");
+    const detailPage = document.getElementById("product-name");
+
     if (shopPage) {
       generateShopCards(products);
       setupAddToCartButtons();
       setupFilters();
     }
 
-    const detailPage = document.getElementById("product-name");
     if (detailPage) {
       const savedIndex = localStorage.getItem("productIndex");
       if (savedIndex !== null) {
         loadProduct(savedIndex);
-      } else {
-        console.warn("No product index found in localStorage.");
       }
     }
   } catch (error) {
@@ -60,95 +64,10 @@ async function loadProductsFromAPI() {
   }
 }
 
-async function fetchProducts() {
-  const res = await fetch(API_URL);
-  return await res.json();
-}
-
-async function loadProduct(index) {
-  const products = await fetchProducts();
-  const product = products[index];
-
-  if (!product) {
-    console.warn("Product not found for index:", index);
-    return;
-  }
-
-  console.log("Loading product:", product);
-
-  document.getElementById("product-name")?.textContent = product.name;
-  document.getElementById("price")?.textContent = "₹" + product.price;
-  document.getElementById("description")?.textContent = product.description;
-  document.getElementById("stock")?.textContent = product.stock;
-
-  document.getElementById("main-images").innerHTML =
-    `<img src="${product.thumbnail}" id="main-image" class="img-fluid" />`;
-
-  const thumbs = document.getElementById("thumbs");
-  thumbs.innerHTML = '';
-  product.images?.forEach(img => {
-    const thumb = document.createElement("div");
-    thumb.className = "pro-nav-thumb";
-    thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
-    thumbs.appendChild(thumb);
-  });
-
-  const stars = Math.round(product.rating);
-  document.getElementById("rating-stars").innerHTML =
-    '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
-
-  const rawNumber = product.whatsapp || '';
-  const phone = rawNumber.replace(/[^0-9]/g, '');
-  document.getElementById("enquire-btn").href = `https://wa.me/${phone}`;
-
-  const enquireBtn = document.getElementById("enquire-btn");
-  enquireBtn.dataset.index = index;
-
-  enquireBtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existing = cart.find(
-      (item) => item.name === product.name && item.size === product.size && item.color === product.color
-    );
-
-    if (!existing) {
-      cart.push({ ...product, quantity: 1 });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    window.location.href = "cart.html";
-  });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  loadProductsFromAPI();
-
-  const thumbsContainer = document.getElementById("thumbs");
-  if (thumbsContainer) {
-    thumbsContainer.addEventListener("click", function (e) {
-      if (e.target.tagName === "IMG") {
-        const src = e.target.dataset.src;
-        document.getElementById("main-image").src = src;
-        document.querySelectorAll(".pro-nav-thumb img").forEach(img => img.classList.remove("active"));
-        e.target.classList.add("active");
-      }
-    });
-  }
-
-  const whatsappBtn = document.getElementById('whatsapp-btn');
-  if (whatsappBtn) {
-    whatsappBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      generateWhatsAppLink(cart);
-    });
-  }
-});
-
-
 function generateShopCards(filteredList = products) {
   const container = document.getElementById("shop-products");
+  if (!container) return;
+
   container.innerHTML = '';
 
   filteredList.forEach((product, index) => {
@@ -191,8 +110,9 @@ function generateShopCards(filteredList = products) {
 
 function setupAddToCartButtons() {
   document.body.addEventListener('click', function (e) {
-    if (e.target.closest('.add-to-cart-btn')) {
-      const index = e.target.closest('.add-to-cart-btn').dataset.index;
+    const button = e.target.closest('.add-to-cart-btn');
+    if (button) {
+      const index = button.dataset.index;
       const product = products[index];
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -232,6 +152,84 @@ function setupFilters() {
   sizeCheckboxes.forEach(cb => cb.addEventListener("change", updateFilters));
   colorCheckboxes.forEach(cb => cb.addEventListener("change", updateFilters));
 }
+
+async function loadProduct(index) {
+  const product = products[index];
+  if (!product) return;
+
+  document.getElementById("product-name")?.textContent = product.name;
+  document.getElementById("price")?.textContent = "₹" + product.price;
+  document.getElementById("description")?.textContent = product.description;
+  document.getElementById("stock")?.textContent = product.stock;
+  document.getElementById("main-images")?.innerHTML =
+    `<img src="${product.thumbnail}" id="main-image" class="img-fluid" />`;
+
+  const thumbs = document.getElementById("thumbs");
+  if (thumbs) {
+    thumbs.innerHTML = '';
+    product.images?.forEach(img => {
+      const thumb = document.createElement("div");
+      thumb.className = "pro-nav-thumb";
+      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
+      thumbs.appendChild(thumb);
+    });
+  }
+
+  const stars = Math.round(product.rating);
+  document.getElementById("rating-stars")?.innerHTML =
+    '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
+
+  const rawNumber = product.whatsapp || '';
+  const phone = rawNumber.replace(/[^0-9]/g, '');
+  const enquireBtn = document.getElementById("enquire-btn");
+
+  if (enquireBtn) {
+    enquireBtn.href = `https://wa.me/${phone}`;
+    enquireBtn.dataset.index = index;
+    enquireBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existing = cart.find(
+        (item) => item.name === product.name && item.size === product.size && item.color === product.color
+      );
+
+      if (!existing) {
+        cart.push({ ...product, quantity: 1 });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      window.location.href = "cart.html";
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadProductsFromAPI();
+
+  const thumbsContainer = document.getElementById("thumbs");
+  if (thumbsContainer) {
+    thumbsContainer.addEventListener("click", function (e) {
+      if (e.target.tagName === "IMG") {
+        const src = e.target.dataset.src;
+        const mainImage = document.getElementById("main-image");
+        if (mainImage) {
+          mainImage.src = src;
+          document.querySelectorAll(".pro-nav-thumb img").forEach(img => img.classList.remove("active"));
+          e.target.classList.add("active");
+        }
+      }
+    });
+  }
+
+  const whatsappBtn = document.getElementById('whatsapp-btn');
+  if (whatsappBtn) {
+    whatsappBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      generateWhatsAppLink(cart);
+    });
+  }
+});
 
 
 
