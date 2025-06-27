@@ -32,9 +32,11 @@
 	///shoppage and product  page js start here
 let products = [];
 
+const API_URL = "https://silver-crown-creation-main-1.onrender.com/api/products/";
+
 async function loadProductsFromAPI() {
   try {
-    const response = await fetch("https://silver-crown-creation.onrender.com/api/products/");
+    const response = await fetch(API_URL);
     products = await response.json();
 
     const shopPage = document.getElementById("shop-products");
@@ -55,7 +57,7 @@ async function loadProductsFromAPI() {
 }
 
 async function fetchProducts() {
-  const res = await fetch("https://silver-crown-creation.onrender.com/api/products/");
+  const res = await fetch(API_URL);
   return await res.json();
 }
 
