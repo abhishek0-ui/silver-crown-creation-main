@@ -34,22 +34,28 @@ let products = [];
 
 const API_URL = "https://silver-crown-creation-main-1.onrender.com/api/products/";
 
+// Fetch products from API
 async function fetchProducts() {
-  const res = await fetch(API_URL);
-  return await res.json();
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error('Network response was not ok');
+    return await res.json();
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
 }
 
+// Load products and initialize pages
 async function loadProductsFromAPI() {
   try {
-    const response = await fetch(API_URL);
-    products = await response.json();
+    products = await fetchProducts();
 
     const shopPage = document.getElementById("shop-products");
     const detailPage = document.getElementById("product-name");
 
     if (shopPage) {
       generateShopCards(products);
-      setupAddToCartButtons();
       setupFilters();
     }
 
@@ -64,6 +70,7 @@ async function loadProductsFromAPI() {
   }
 }
 
+// Generate product cards for shop page
 function generateShopCards(filteredList = products) {
   const container = document.getElementById("shop-products");
   if (!container) return;
@@ -72,6 +79,8 @@ function generateShopCards(filteredList = products) {
 
   filteredList.forEach((product, index) => {
     const imageSrc = product.thumbnail || 'assets/images/placeholder.jpg';
+    const discountBadge = product.discount ? 
+      `<div class="product-label discount"><span>${product.discount}</span></div>` : '';
 
     const card = document.createElement("div");
     card.className = "col-md-4 col-sm-6 mb-4";
@@ -84,7 +93,7 @@ function generateShopCards(filteredList = products) {
           </a>
           <div class="product-badge">
             <div class="product-label new"><span>new</span></div>
-            <div class="product-label discount"><span>${product.discount || ''}</span></div>
+            ${discountBadge}
           </div>
         </figure>
         <div class="product-caption text-center">
@@ -106,33 +115,50 @@ function generateShopCards(filteredList = products) {
       </div>`;
     container.appendChild(card);
   });
+
+  // Initialize add to cart buttons after generating cards
+  setupAddToCartButtons();
 }
 
+// Setup add to cart functionality for shop page
 function setupAddToCartButtons() {
-  document.body.addEventListener('click', function (e) {
+  document.addEventListener('click', function(e) {
     const button = e.target.closest('.add-to-cart-btn');
     if (button) {
+      e.preventDefault();
       const index = button.dataset.index;
-      const product = products[index];
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-      const existing = cart.find(
-        (item) =>
-          item.name === product.name &&
-          item.size === product.size &&
-          item.color === product.color
-      );
-
-      if (!existing) {
-        cart.push({ ...product, quantity: 1 });
-        localStorage.setItem('cart', JSON.stringify(cart));
-      }
-
-      window.location.href = 'cart.html';
+      addProductToCart(index);
     }
   });
 }
 
+// Add product to cart (shared function)
+function addProductToCart(index) {
+  if (!products[index]) return;
+
+  const product = products[index];
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  const existingIndex = cart.findIndex(
+    item => item.name === product.name &&
+           (item.size || '') === (product.size || '') &&
+           (item.color || '') === (product.color || '')
+  );
+
+  if (existingIndex === -1) {
+    cart.push({ 
+      ...product, 
+      quantity: 1 
+    });
+  } else {
+    cart[existingIndex].quantity += 1;
+  }
+
+  localStorage.setItem('cart', JSON.stringify(cart));
+  window.location.href = 'cart.html';
+}
+
+// Setup filters for shop page
 function setupFilters() {
   const sizeCheckboxes = document.querySelectorAll(".size-filter");
   const colorCheckboxes = document.querySelectorAll(".color-filter");
@@ -163,88 +189,65 @@ function setupFilters() {
   colorCheckboxes.forEach(cb => cb.addEventListener("change", updateFilters));
 }
 
+// Load product details
 async function loadProduct(index) {
-  const product = products[index];
-  if (!product) return;
+  if (!products[index]) return;
 
+  const product = products[index];
+  
+  // Update basic product info
   document.getElementById("product-name").textContent = product.name;
   document.getElementById("price").textContent = "₹" + product.price;
-  document.getElementById("description").textContent = product.description;
-  document.getElementById("stock").textContent = product.stock;
-  document.getElementById("main-images").innerHTML = `<img src="${product.thumbnail}" id="main-image" />`;
+  document.getElementById("description").textContent = product.description || 'No description available';
+  document.getElementById("stock").textContent = product.stock || 'In Stock';
+  
+  // Update main image
+  const mainImage = product.thumbnail || 'assets/images/placeholder.jpg';
+  document.getElementById("main-images").innerHTML = `<img src="${mainImage}" id="main-image" />`;
 
+  // Update thumbnail images
   const thumbs = document.getElementById("thumbs");
   thumbs.innerHTML = '';
-  product.images?.forEach(img => {
-    const thumb = document.createElement("div");
-    thumb.className = "pro-nav-thumb";
-    thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
-    thumbs.appendChild(thumb);
-  });
+  if (product.images && product.images.length > 0) {
+    product.images.forEach((img, i) => {
+      const thumb = document.createElement("div");
+      thumb.className = "pro-nav-thumb" + (i === 0 ? ' active' : '');
+      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" ${i === 0 ? 'class="active"' : ''} />`;
+      thumbs.appendChild(thumb);
+    });
+  }
 
-  const stars = Math.round(product.rating);
+  // Update rating
+  const stars = Math.min(5, Math.max(0, Math.round(product.rating || 0)));
   document.getElementById("rating-stars").innerHTML =
     '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
 
+  // Setup WhatsApp button
   const rawNumber = product.whatsapp || '';
   const phone = rawNumber.replace(/[^0-9]/g, '');
-  document.getElementById("enquire-btn").href = `https://wa.me/${phone}`;
+  const whatsappBtn = document.getElementById("enquire-btn");
+  if (whatsappBtn && phone) {
+    whatsappBtn.href = `https://wa.me/${phone}`;
+    whatsappBtn.style.display = 'inline-block';
+  } else if (whatsappBtn) {
+    whatsappBtn.style.display = 'none';
+  }
 
-  const enquireBtn = document.getElementById("enquire-btn");
-  enquireBtn.dataset.index = index;
-
-  enquireBtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existing = cart.find(
-      (item) => item.name === product.name && item.size === product.size && item.color === product.color
-    );
-
-    if (!existing) {
-      cart.push({ ...product, quantity: 1 });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    window.location.href = "cart.html";
-  });
-}
-
-// NEW: Handle Add to Cart on product details page
-function setupDetailsPageAddToCart() {
+  // Setup details page add to cart button
   const detailsAddToCartBtn = document.getElementById('details-add-to-cart-btn');
   if (detailsAddToCartBtn) {
-    detailsAddToCartBtn.addEventListener('click', function(e) {
+    detailsAddToCartBtn.onclick = (e) => {
       e.preventDefault();
-      const index = localStorage.getItem("productIndex");
-      if (index !== null) {
-        const product = products[index];
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        
-        const existing = cart.find(
-          item => item.name === product.name &&
-                 item.size === product.size &&
-                 item.color === product.color
-        );
-        
-        if (!existing) {
-          cart.push({ ...product, quantity: 1 });
-          localStorage.setItem('cart', JSON.stringify(cart));
-        }
-        
-        window.location.href = 'cart.html';
-      }
-    });
+      addProductToCart(index);
+    };
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadProductsFromAPI();
-  setupDetailsPageAddToCart(); // Initialize the details page button handler
-
+// Initialize image thumbnail navigation
+function setupThumbnailNavigation() {
   const thumbsContainer = document.getElementById("thumbs");
   if (thumbsContainer) {
-    thumbsContainer.addEventListener("click", function (e) {
+    thumbsContainer.addEventListener("click", function(e) {
       if (e.target.tagName === "IMG") {
         const src = e.target.dataset.src;
         document.getElementById("main-image").src = src;
@@ -253,21 +256,48 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+}
 
+// Initialize WhatsApp cart sharing
+function setupWhatsAppButton() {
   const whatsappBtn = document.getElementById('whatsapp-btn');
   if (whatsappBtn) {
-    whatsappBtn.addEventListener('click', function (e) {
+    whatsappBtn.addEventListener('click', function(e) {
       e.preventDefault();
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       generateWhatsAppLink(cart);
     });
   }
-});
-
-// Ensure this function exists or add it
-function generateWhatsAppLink(cart) {
-  // Your existing WhatsApp link generation logic here
 }
+
+// Generate WhatsApp message with cart contents
+function generateWhatsAppLink(cart) {
+  if (!cart.length) {
+    alert('Your cart is empty!');
+    return;
+  }
+
+  let message = "Hello! I'm interested in these products:\n\n";
+  let total = 0;
+
+  cart.forEach(item => {
+    message += `- ${item.name} (${item.quantity}x) - ₹${item.price * item.quantity}\n`;
+    total += item.price * item.quantity;
+  });
+
+  message += `\nTotal: ₹${total}\n`;
+  message += "Please let me know about availability and payment options.";
+
+  const encodedMessage = encodeURIComponent(message);
+  window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+}
+
+// Initialize everything when DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  loadProductsFromAPI();
+  setupThumbnailNavigation();
+  setupWhatsAppButton();
+});
 
 
 
