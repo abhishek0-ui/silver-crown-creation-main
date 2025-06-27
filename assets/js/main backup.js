@@ -99,7 +99,7 @@ function generateShopCards(filteredList = products) {
         </figure>
         <div class="product-caption text-center">
           <div class="product-identity">
-            <p class="manufacturer-name"><a href="#">Jewels</a></p>
+            <p class="manufacturer-name">Silver</p>
           </div>
           <h6 class="product-name">
             <a href="product-details.html" onclick="localStorage.setItem('productIndex', ${index})">
