@@ -108,30 +108,29 @@ function generateShopCards(filteredList = products) {
   });
 }
 
-function setupAddToCartButtons() {
-  document.body.addEventListener('click', function (e) {
-    const button = e.target.closest('.add-to-cart-btn');
-    if (button) {
-      const index = button.dataset.index;
-      const product = products[index];
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const enquireBtn = document.getElementById("enquire-btn");
+  enquireBtn.dataset.index = index;
 
-      const existing = cart.find(
-        (item) =>
-          item.name === product.name &&
-          item.size === product.size &&
-          item.color === product.color
-      );
+  // Remove any previous click event and add new
+  enquireBtn.onclick = function (e) {
+    e.preventDefault();
 
-      if (!existing) {
-        cart.push({ ...product, quantity: 1 });
-        localStorage.setItem('cart', JSON.stringify(cart));
-      }
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-      window.location.href = 'cart.html';
+    const existing = cart.find(
+      (item) =>
+        item.name === product.name &&
+        item.size === product.size &&
+        item.color === product.color
+    );
+
+    if (!existing) {
+      cart.push({ ...product, quantity: 1 });
+      localStorage.setItem("cart", JSON.stringify(cart));
     }
-  });
-}
+
+    window.location.href = "cart.html";
+  };
 
 
 function setupFilters() {
