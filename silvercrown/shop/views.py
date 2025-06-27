@@ -5,10 +5,10 @@ from .serializers import ProductSerializer
 from django.shortcuts import render
 
 @api_view(['GET'])
-def product_list(request):
-    products = Product.objects.all()
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+# def product_list(request):
+#     products = Product.objects.all()
+#     serializer = ProductSerializer(products, many=True)
+#     return Response(serializer.data)
 
 def product_page(request):
     products = Product.objects.all()
