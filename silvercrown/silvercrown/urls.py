@@ -4,9 +4,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', include('shop.urls')),        # Let shop control /
+    path('', include('shop.urls')),         # ✅ Homepage from shop
     path('admin/', admin.site.urls),
-    path('api/', include('shop.api_urls')),  # Optional: split API into `api_urls.py`
 ]
 
 if settings.DEBUG:
