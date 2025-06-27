@@ -157,50 +157,47 @@ async function loadProduct(index) {
   const product = products[index];
   if (!product) return;
 
-  document.getElementById("product-name")?.textContent = product.name;
-  document.getElementById("price")?.textContent = "₹" + product.price;
-  document.getElementById("description")?.textContent = product.description;
-  document.getElementById("stock")?.textContent = product.stock;
-  document.getElementById("main-images")?.innerHTML =
-    `<img src="${product.thumbnail}" id="main-image" class="img-fluid" />`;
+  document.getElementById("product-name").textContent = product.name;
+  document.getElementById("price").textContent = "₹" + product.price;
+  document.getElementById("description").textContent = product.description;
+  document.getElementById("stock").textContent = product.stock;
+  document.getElementById("main-images").innerHTML = `<img src="${product.thumbnail}" id="main-image" />`;
 
   const thumbs = document.getElementById("thumbs");
-  if (thumbs) {
-    thumbs.innerHTML = '';
-    product.images?.forEach(img => {
-      const thumb = document.createElement("div");
-      thumb.className = "pro-nav-thumb";
-      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
-      thumbs.appendChild(thumb);
-    });
-  }
+  thumbs.innerHTML = '';
+  product.images?.forEach(img => {
+    const thumb = document.createElement("div");
+    thumb.className = "pro-nav-thumb";
+    thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
+    thumbs.appendChild(thumb);
+  });
 
   const stars = Math.round(product.rating);
-  document.getElementById("rating-stars")?.innerHTML =
+  document.getElementById("rating-stars").innerHTML =
     '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
 
   const rawNumber = product.whatsapp || '';
   const phone = rawNumber.replace(/[^0-9]/g, '');
+  document.getElementById("enquire-btn").href = `https://wa.me/${phone}`;
+
   const enquireBtn = document.getElementById("enquire-btn");
+  enquireBtn.dataset.index = index;
 
-  if (enquireBtn) {
-    enquireBtn.href = `https://wa.me/${phone}`;
-    enquireBtn.dataset.index = index;
-    enquireBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const existing = cart.find(
-        (item) => item.name === product.name && item.size === product.size && item.color === product.color
-      );
+  enquireBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-      if (!existing) {
-        cart.push({ ...product, quantity: 1 });
-      }
+    const existing = cart.find(
+      (item) => item.name === product.name && item.size === product.size && item.color === product.color
+    );
 
-      localStorage.setItem("cart", JSON.stringify(cart));
-      window.location.href = "cart.html";
-    });
-  }
+    if (!existing) {
+      cart.push({ ...product, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    window.location.href = "cart.html";
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -211,12 +208,9 @@ document.addEventListener("DOMContentLoaded", () => {
     thumbsContainer.addEventListener("click", function (e) {
       if (e.target.tagName === "IMG") {
         const src = e.target.dataset.src;
-        const mainImage = document.getElementById("main-image");
-        if (mainImage) {
-          mainImage.src = src;
-          document.querySelectorAll(".pro-nav-thumb img").forEach(img => img.classList.remove("active"));
-          e.target.classList.add("active");
-        }
+        document.getElementById("main-image").src = src;
+        document.querySelectorAll(".pro-nav-thumb img").forEach(img => img.classList.remove("active"));
+        e.target.classList.add("active");
       }
     });
   }
@@ -234,6 +228,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const shopPage = document.getElementById("shop-products");
+  const detailPage = document.getElementById("product-name");
+
+  if (!shopPage && !detailPage) return;
+
+  let products = [];
+  try {
+    const response = await fetch("https://silver-crown-creation-main-1.onrender.com/api/products/");
+    products = await response.json();
+  } catch (err) {
+    console.error("API fetch failed:", err);
+    return;
+  }
+
+  if (shopPage) {
+    generateShopCards(products);
+    setupAddToCartButtons();
+    setupFilters();
+  }
+
+  if (detailPage) {
+    const idx = localStorage.getItem("productIndex");
+    if (idx !== null && products[+idx]) {
+      loadProduct(products, +idx);
+    }
+  }
+})
 
 
 	// tooltip active js
