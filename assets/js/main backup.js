@@ -34,7 +34,7 @@ let products = [];
 
 async function loadProductsFromAPI() {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/products/");
+    const response = await fetch("https://silver-crown-creation.onrender.com/api/products/");
     products = await response.json();
 
     const shopPage = document.getElementById("shop-products");
@@ -55,7 +55,7 @@ async function loadProductsFromAPI() {
 }
 
 async function fetchProducts() {
-  const res = await fetch("http://127.0.0.1:8000/api/products/");
+  const res = await fetch("https://silver-crown-creation.onrender.com/api/products/");
   return await res.json();
 }
 
@@ -82,17 +82,15 @@ async function loadProduct(index) {
   document.getElementById("rating-stars").innerHTML =
     '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
 
-  // ✅ Set WhatsApp link (clean number)
   const rawNumber = product.whatsapp || '';
   const phone = rawNumber.replace(/[^0-9]/g, '');
   document.getElementById("enquire-btn").href = `https://wa.me/${phone}`;
 
-  // ✅ Set dataset and handle add to cart
   const enquireBtn = document.getElementById("enquire-btn");
   enquireBtn.dataset.index = index;
 
   enquireBtn.addEventListener("click", function (e) {
-    e.preventDefault(); // prevent WhatsApp redirect unless intended
+    e.preventDefault();
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     const existing = cart.find(
@@ -104,12 +102,9 @@ async function loadProduct(index) {
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
-    window.location.href = "cart.html"; // ✅ redirect to cart
+    window.location.href = "cart.html";
   });
 }
-
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
   loadProductsFromAPI();
@@ -141,7 +136,7 @@ function generateShopCards(filteredList = products) {
   container.innerHTML = '';
 
   filteredList.forEach((product, index) => {
-    const imageSrc = product.thumbnail || 'assets/images/placeholder.jpg'; // fallback if missing
+    const imageSrc = product.thumbnail || 'assets/images/placeholder.jpg';
 
     const card = document.createElement("div");
     card.className = "col-md-4 col-sm-6 mb-4";
@@ -221,6 +216,7 @@ function setupFilters() {
   sizeCheckboxes.forEach(cb => cb.addEventListener("change", updateFilters));
   colorCheckboxes.forEach(cb => cb.addEventListener("change", updateFilters));
 }
+
 
 
 

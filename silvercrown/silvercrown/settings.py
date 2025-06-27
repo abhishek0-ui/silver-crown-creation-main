@@ -109,3 +109,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # Default primary key type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOWED_ORIGINS = [
+    "https://dapper-medovik-26e9c9.netlify.app/shop",  # or whatever your real frontend URL is
+]
+
+# Optional during dev
+CORS_ALLOW_ALL_ORIGINS = True
