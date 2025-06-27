@@ -111,8 +111,11 @@ CORS_ALLOW_ALL_ORIGINS = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    "https://dapper-medovik-26e9c9.netlify.app",  # or whatever your real frontend URL is
+    "https://dapper-medovik-26e9c9.netlify.app",
+    "https://silver-crown-creation.onrender.com",
 ]
+
 
 # Optional during dev
 CORS_ALLOW_ALL_ORIGINS = True
+STATICFILES_DIRS = [BASE_DIR / 'static']
