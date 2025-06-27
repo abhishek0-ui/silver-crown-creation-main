@@ -1,15 +1,14 @@
-from pathlib import Path
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# Security
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-dev-key')
-
-# SECURITY WARNING: don’t run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
@@ -18,7 +17,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
-# Application definition
+# Installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -27,16 +26,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 3rd-party
+    # Third-party
     'rest_framework',
     'corsheaders',
     'cloudinary',
     'cloudinary_storage',
 
-    # local
+    # Local
     'shop',
 ]
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# URL settings
 ROOT_URLCONF = 'silvercrown.urls'
 
 TEMPLATES = [
@@ -90,13 +91,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JS)
+# Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Media files using Cloudinary
+# Media files with Cloudinary
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
@@ -104,6 +105,7 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
+MEDIA_URL = '/media/'  # Not strictly needed with Cloudinary but safe
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
@@ -111,5 +113,5 @@ CORS_ALLOWED_ORIGINS = [
     "https://silver-crown-creation.onrender.com",
 ]
 
-# Default primary key field type
+# Primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
