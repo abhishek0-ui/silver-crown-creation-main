@@ -12,7 +12,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-dev-key')
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    'silver-crown-creation.onrender.com',
+    'silver-crown-creation-main-1.onrender.com',
     'localhost',
     '127.0.0.1',
 ]
