@@ -133,7 +133,6 @@ function setupAddToCartButtons() {
   });
 }
 
-
 function setupFilters() {
   const sizeCheckboxes = document.querySelectorAll(".size-filter");
   const colorCheckboxes = document.querySelectorAll(".color-filter");
@@ -174,14 +173,14 @@ async function loadProduct(index) {
   document.getElementById("stock").textContent = product.stock;
   document.getElementById("main-images").innerHTML = `<img src="${product.thumbnail}" id="main-image" />`;
 
- const thumbs = document.getElementById("thumbs");
-thumbs.innerHTML = '';
-product.images?.forEach(img => {
-  const thumb = document.createElement("div");
-  thumb.className = "pro-nav-thumb";
-  thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
-  thumbs.appendChild(thumb);
-});
+  const thumbs = document.getElementById("thumbs");
+  thumbs.innerHTML = '';
+  product.images?.forEach(img => {
+    const thumb = document.createElement("div");
+    thumb.className = "pro-nav-thumb";
+    thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
+    thumbs.appendChild(thumb);
+  });
 
   const stars = Math.round(product.rating);
   document.getElementById("rating-stars").innerHTML =
@@ -211,8 +210,37 @@ product.images?.forEach(img => {
   });
 }
 
+// NEW: Handle Add to Cart on product details page
+function setupDetailsPageAddToCart() {
+  const detailsAddToCartBtn = document.getElementById('details-add-to-cart-btn');
+  if (detailsAddToCartBtn) {
+    detailsAddToCartBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const index = localStorage.getItem("productIndex");
+      if (index !== null) {
+        const product = products[index];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        const existing = cart.find(
+          item => item.name === product.name &&
+                 item.size === product.size &&
+                 item.color === product.color
+        );
+        
+        if (!existing) {
+          cart.push({ ...product, quantity: 1 });
+          localStorage.setItem('cart', JSON.stringify(cart));
+        }
+        
+        window.location.href = 'cart.html';
+      }
+    });
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   loadProductsFromAPI();
+  setupDetailsPageAddToCart(); // Initialize the details page button handler
 
   const thumbsContainer = document.getElementById("thumbs");
   if (thumbsContainer) {
@@ -236,9 +264,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
-
-
+// Ensure this function exists or add it
+function generateWhatsAppLink(cart) {
+  // Your existing WhatsApp link generation logic here
+}
 
 
 
