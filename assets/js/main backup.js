@@ -116,12 +116,23 @@ function setupAddToCartButtons() {
       const product = products[index];
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-      cart.push({ ...product, quantity: 1 });
-      localStorage.setItem('cart', JSON.stringify(cart));
+      const existing = cart.find(
+        (item) =>
+          item.name === product.name &&
+          item.size === product.size &&
+          item.color === product.color
+      );
+
+      if (!existing) {
+        cart.push({ ...product, quantity: 1 });
+        localStorage.setItem('cart', JSON.stringify(cart));
+      }
+
       window.location.href = 'cart.html';
     }
   });
 }
+
 
 function setupFilters() {
   const sizeCheckboxes = document.querySelectorAll(".size-filter");
