@@ -48,8 +48,12 @@ async function loadProductsFromAPI() {
 
     const detailPage = document.getElementById("product-name");
     if (detailPage) {
-      const savedIndex = localStorage.getItem("productIndex") || 0;
-      loadProduct(savedIndex);
+      const savedIndex = localStorage.getItem("productIndex");
+      if (savedIndex !== null) {
+        loadProduct(savedIndex);
+      } else {
+        console.warn("No product index found in localStorage.");
+      }
     }
   } catch (error) {
     console.error("Failed to load products:", error);
@@ -65,11 +69,20 @@ async function loadProduct(index) {
   const products = await fetchProducts();
   const product = products[index];
 
-  document.getElementById("product-name").textContent = product.name;
-  document.getElementById("price").textContent = "₹" + product.price;
-  document.getElementById("description").textContent = product.description;
-  document.getElementById("stock").textContent = product.stock;
-  document.getElementById("main-images").innerHTML = `<img src="${product.thumbnail}" id="main-image" />`;
+  if (!product) {
+    console.warn("Product not found for index:", index);
+    return;
+  }
+
+  console.log("Loading product:", product);
+
+  document.getElementById("product-name")?.textContent = product.name;
+  document.getElementById("price")?.textContent = "₹" + product.price;
+  document.getElementById("description")?.textContent = product.description;
+  document.getElementById("stock")?.textContent = product.stock;
+
+  document.getElementById("main-images").innerHTML =
+    `<img src="${product.thumbnail}" id="main-image" class="img-fluid" />`;
 
   const thumbs = document.getElementById("thumbs");
   thumbs.innerHTML = '';
@@ -132,6 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 
 function generateShopCards(filteredList = products) {
   const container = document.getElementById("shop-products");
