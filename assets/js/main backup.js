@@ -189,40 +189,41 @@ function setupFilters() {
   colorCheckboxes.forEach(cb => cb.addEventListener("change", updateFilters));
 }
 
-// Load product details
+// ✅ Load product details with image from `product.images`
 async function loadProduct(index) {
   if (!products[index]) return;
 
   const product = products[index];
   
-  // Update basic product info
-  document.getElementById("product-name").textContent = product.name;
-  document.getElementById("price").textContent = "₹" + product.price;
-  document.getElementById("description").textContent = product.description || 'No description available';
-  document.getElementById("stock").textContent = product.stock || 'In Stock';
-  
-  // Update main image
-  const mainImage = product.thumbnail || 'assets/images/placeholder.jpg';
+  // ✅ Use first product image (not thumbnail)
+  const mainImage = product.images?.length ? product.images[0].image : 'assets/images/placeholder.jpg';
   document.getElementById("main-images").innerHTML = `<img src="${mainImage}" id="main-image" />`;
 
-  // Update thumbnail images
+  // ✅ Populate thumbnails (excluding first image)
   const thumbs = document.getElementById("thumbs");
   thumbs.innerHTML = '';
   if (product.images && product.images.length > 0) {
     product.images.forEach((img, i) => {
+      if (i === 0) return;
       const thumb = document.createElement("div");
-      thumb.className = "pro-nav-thumb" + (i === 0 ? ' active' : '');
-      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" ${i === 0 ? 'class="active"' : ''} />`;
+      thumb.className = "pro-nav-thumb";
+      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" />`;
       thumbs.appendChild(thumb);
     });
   }
 
-  // Update rating
+  // Basic info
+  document.getElementById("product-name").textContent = product.name;
+  document.getElementById("price").textContent = "₹" + product.price;
+  document.getElementById("description").textContent = product.description || 'No description available';
+  document.getElementById("stock").textContent = product.stock || 'In Stock';
+
+  // Rating
   const stars = Math.min(5, Math.max(0, Math.round(product.rating || 0)));
   document.getElementById("rating-stars").innerHTML =
     '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
 
-  // Setup WhatsApp button
+  // WhatsApp
   const rawNumber = product.whatsapp || '';
   const phone = rawNumber.replace(/[^0-9]/g, '');
   const whatsappBtn = document.getElementById("enquire-btn");
@@ -233,7 +234,7 @@ async function loadProduct(index) {
     whatsappBtn.style.display = 'none';
   }
 
-  // Setup details page add to cart button
+  // Add to cart from product-details
   const detailsAddToCartBtn = document.getElementById('details-add-to-cart-btn');
   if (detailsAddToCartBtn) {
     detailsAddToCartBtn.onclick = (e) => {
@@ -243,7 +244,7 @@ async function loadProduct(index) {
   }
 }
 
-// Initialize image thumbnail navigation
+// Thumbnail click handling
 function setupThumbnailNavigation() {
   const thumbsContainer = document.getElementById("thumbs");
   if (thumbsContainer) {
@@ -258,7 +259,7 @@ function setupThumbnailNavigation() {
   }
 }
 
-// Initialize WhatsApp cart sharing
+// WhatsApp sharing setup
 function setupWhatsAppButton() {
   const whatsappBtn = document.getElementById('whatsapp-btn');
   if (whatsappBtn) {
@@ -270,7 +271,7 @@ function setupWhatsAppButton() {
   }
 }
 
-// Generate WhatsApp message with cart contents
+// Create WhatsApp message from cart
 function generateWhatsAppLink(cart) {
   if (!cart.length) {
     alert('Your cart is empty!');
@@ -292,13 +293,12 @@ function generateWhatsAppLink(cart) {
   window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
 }
 
-// Initialize everything when DOM is loaded
+// Initialize on DOM ready
 document.addEventListener("DOMContentLoaded", () => {
   loadProductsFromAPI();
   setupThumbnailNavigation();
   setupWhatsAppButton();
 });
-
 
 
 
