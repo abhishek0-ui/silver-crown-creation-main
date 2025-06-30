@@ -35,29 +35,30 @@ let products = [];
 
 const API_URL = "https://silver-crown-creation-main.onrender.com/api/products/";
 
+// ✅ Utility: Optimize Cloudinary URLs
+function optimizeCloudinaryURL(url) {
+  return url && url.includes('/upload/') ? url.replace('/upload/', '/upload/f_auto,q_auto/') : url;
+}
+
 async function fetchProducts() {
   try {
     const res = await fetch(API_URL, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache"
-      },
-      cache: "no-store"
+        "Content-Type": "application/json"
+      }
     });
 
-    console.log("API status:", res.status);
     if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Bad response body:", errorText);
-      throw new Error(`Fetch failed with status ${res.status}`);
+      console.error(`Server responded with status: ${res.status}`);
+      throw new Error('Network response was not ok');
     }
 
     const data = await res.json();
     console.log("Fetched products:", data);
     return data;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error);
     return [];
   }
 }
@@ -69,15 +70,9 @@ async function loadProductsFromAPI() {
   const detailPage = document.getElementById("product-name");
 
   if (shopPage) {
-    if (products.length > 0) {
-      generateShopCards(products);
-      setupFilters();
-      setupAddToCartButtons();
-    } else {
-      shopPage.innerHTML = `<div class="col-12 text-center text-danger">
-        <p><strong>No products found or server error.</strong></p>
-      </div>`;
-    }
+    generateShopCards(products);
+    setupFilters();
+    setupAddToCartButtons();
   }
 
   if (detailPage) {
@@ -92,11 +87,10 @@ function generateShopCards(filteredList = products) {
   const container = document.getElementById("shop-products");
   if (!container) return;
 
-  console.log("Rendering products:", filteredList.length);
   container.innerHTML = '';
 
   filteredList.forEach((product, index) => {
-    const imageSrc = product.thumbnail || 'assets/images/placeholder.jpg';
+    const imageSrc = optimizeCloudinaryURL(product.thumbnail) || 'assets/images/placeholder.jpg';
     const discountBadge = product.discount ? `<div class="product-label discount"><span>${product.discount}</span></div>` : '';
 
     const card = document.createElement("div");
@@ -195,16 +189,17 @@ function loadProduct(index) {
   document.getElementById("description").textContent = product.description || 'No description available';
   document.getElementById("stock").textContent = product.stock || 'In Stock';
 
-  const mainImage = product.images?.[0]?.image || product.thumbnail || 'assets/images/placeholder.jpg';
+  const mainImage = optimizeCloudinaryURL(product.images?.[0]?.image || product.thumbnail || 'assets/images/placeholder.jpg');
   document.getElementById("main-images").innerHTML = `<img src="${mainImage}" id="main-image" />`;
 
   const thumbs = document.getElementById("thumbs");
   thumbs.innerHTML = '';
   if (product.images && product.images.length > 0) {
     product.images.forEach((img, i) => {
+      const thumbURL = optimizeCloudinaryURL(img.image);
       const thumb = document.createElement("div");
       thumb.className = "pro-nav-thumb";
-      thumb.innerHTML = `<img src="${img.image}" data-src="${img.image}" ${i === 0 ? 'class="active"' : ''} />`;
+      thumb.innerHTML = `<img src="${thumbURL}" data-src="${thumbURL}" ${i === 0 ? 'class="active"' : ''} />`;
       thumbs.appendChild(thumb);
     });
   }
@@ -276,8 +271,8 @@ function generateWhatsAppLink(cart) {
   window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
 }
 
+// ✅ Initialize everything on DOM ready
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM fully loaded and script starting...");
   loadProductsFromAPI();
   setupThumbnailNavigation();
   setupWhatsAppButton();
