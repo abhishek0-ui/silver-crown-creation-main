@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
 # Middleware
 MIDDLEWARE = [
+    'shop.middleware.NoCacheAPIMiddleware', 
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -109,7 +110,7 @@ MEDIA_URL = '/media/'  # Not strictly needed with Cloudinary but safe
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
-    "https://dapper-medovik-26e9c9.netlify.app",
+    "https://www.silvercrowncreation.com",
     "https://silver-crown-creation.onrender.com",
 ]
 
