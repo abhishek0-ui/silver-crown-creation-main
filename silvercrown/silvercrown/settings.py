@@ -12,7 +12,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-dev-key')
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    'silver-crown-creation-main.onrender.com',
+    'silver-crown-creation-main-1.onrender.com',
+    'www.silvercrowncreation.com',
     'localhost',
     '127.0.0.1',
 ]
@@ -38,25 +39,32 @@ INSTALLED_APPS = [
 
 # Middleware
 MIDDLEWARE = [
-    'shop.middleware.NoCacheAPIMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',  # ✅ must be first
+    'django.middleware.common.CommonMiddleware',
+    'shop.middleware.NoCacheAPIMiddleware',   # ✅ your custom middleware
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# URL settings
+# CORS Configuration
+CORS_ALLOW_ALL_ORIGINS = True  # ✅ for testing only — restrict in production
+
+CORS_ALLOWED_ORIGINS = [
+    "https://www.silvercrowncreation.com",
+    "https://silver-crown-creation-main-1.onrender.com",
+]
+# URL configuration
 ROOT_URLCONF = 'silvercrown.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # Add BASE_DIR / 'templates' if needed
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -98,7 +106,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Media files with Cloudinary
+# Media files (Cloudinary)
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
@@ -106,14 +114,8 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
-MEDIA_URL = '/media/'  # Not strictly needed with Cloudinary but safe
 
-# CORS settings
-CORS_ALLOWED_ORIGINS = [
-    "https://silver-crown-creation-main.onrender.com",
-    "https://www.silvercrowncreation.com",  # or your frontend domain
-]
+MEDIA_URL = '/media/'  # optional with Cloudinary
 
-
-# Primary key field type
+# Auto field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

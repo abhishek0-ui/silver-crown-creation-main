@@ -1,3 +1,5 @@
+# silvercrown/urls.py
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -10,7 +12,7 @@ def home(request):
 urlpatterns = [
     path('', home),
     path('admin/', admin.site.urls),
-    path('api/', include('shop.urls')),  # 👈 this should point to shop.urls
+    path('api/', include('shop.urls')),
 ]
 
 if settings.DEBUG:
