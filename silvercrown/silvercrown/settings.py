@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers
+
 
 load_dotenv()
 
@@ -54,10 +56,13 @@ MIDDLEWARE = [
 # CORS Configuration
 CORS_ALLOW_ALL_ORIGINS = False  # ❌ Turn off for production
 CORS_ALLOWED_ORIGINS = [
-    "https://dapper-medovik-26e9c9.netlify.app",  # ✅ Add Netlify frontend URL
-    "https://silver-crown-creation-main.onrender.com",
     "https://www.silvercrowncreation.com",
+    "https://dapper-medovik-26e9c9.netlify.app",  # ✅ Netlify domain
+    "https://silver-crown-creation-main.onrender.com",
+    "http://localhost:3000",  # optional for local testing
+    "http://127.0.0.1:5500"
 ]
+
 # URL configuration
 ROOT_URLCONF = 'silvercrown.urls'
 
@@ -119,3 +124,6 @@ MEDIA_URL = '/media/'  # optional with Cloudinary
 
 # Auto field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'cache-control',
+]
