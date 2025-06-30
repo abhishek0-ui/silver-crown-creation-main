@@ -46,20 +46,21 @@ async function fetchProducts() {
       cache: "no-store"
     });
 
+    console.log("API status:", res.status);
     if (!res.ok) {
-      console.error(`Server responded with status: ${res.status}`);
-      throw new Error('Network response was not ok');
+      const errorText = await res.text();
+      console.error("Bad response body:", errorText);
+      throw new Error(`Fetch failed with status ${res.status}`);
     }
 
     const data = await res.json();
-    console.log("Fetched products:", data);  // ✅ for debugging
+    console.log("Fetched products:", data);
     return data;
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error("Error fetching products:", error);
     return [];
   }
 }
-
 
 async function loadProductsFromAPI() {
   products = await fetchProducts();
@@ -68,9 +69,15 @@ async function loadProductsFromAPI() {
   const detailPage = document.getElementById("product-name");
 
   if (shopPage) {
-    generateShopCards(products);
-    setupFilters();
-    setupAddToCartButtons();
+    if (products.length > 0) {
+      generateShopCards(products);
+      setupFilters();
+      setupAddToCartButtons();
+    } else {
+      shopPage.innerHTML = `<div class="col-12 text-center text-danger">
+        <p><strong>No products found or server error.</strong></p>
+      </div>`;
+    }
   }
 
   if (detailPage) {
@@ -85,6 +92,7 @@ function generateShopCards(filteredList = products) {
   const container = document.getElementById("shop-products");
   if (!container) return;
 
+  console.log("Rendering products:", filteredList.length);
   container.innerHTML = '';
 
   filteredList.forEach((product, index) => {
@@ -268,12 +276,19 @@ function generateWhatsAppLink(cart) {
   window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
 }
 
-// ✅ Single initialization
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM fully loaded and script starting...");
   loadProductsFromAPI();
   setupThumbnailNavigation();
   setupWhatsAppButton();
 });
+
+
+
+
+
+
+
 
 	// tooltip active js
 	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
