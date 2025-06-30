@@ -52,11 +52,11 @@ MIDDLEWARE = [
 ]
 
 # CORS Configuration
-CORS_ALLOW_ALL_ORIGINS = True  # ✅ for testing only — restrict in production
-
+CORS_ALLOW_ALL_ORIGINS = False  # ❌ Turn off for production
 CORS_ALLOWED_ORIGINS = [
-    "https://www.silvercrowncreation.com",
+    "https://dapper-medovik-26e9c9.netlify.app",  # ✅ Add Netlify frontend URL
     "https://silver-crown-creation-main.onrender.com",
+    "https://www.silvercrowncreation.com",
 ]
 # URL configuration
 ROOT_URLCONF = 'silvercrown.urls'

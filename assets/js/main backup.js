@@ -33,7 +33,7 @@
 // Updated Product Page Script
 let products = [];
 
-const API_URL = "https://silver-crown-creation-main-1.onrender.com/api/products/";
+const API_URL = "https://silver-crown-creation-main.onrender.com/api/products/";
 
 async function fetchProducts() {
   try {
