@@ -31,18 +31,19 @@
 
 	///shoppage and product  page js start here
 // Updated Product Page Script
-let products = [];
-
 const API_URL = "https://silver-crown-creation-main.onrender.com/api/products/";
 
 async function fetchProducts() {
   try {
     const res = await fetch(API_URL, {
       method: 'GET',
-      headers: { 'Cache-Control': 'no-cache' },
+      headers: {
+        'Accept': 'application/json'
+      },
       cache: 'no-store'
     });
-    if (!res.ok) throw new Error('Network response was not ok');
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch (error) {
     console.error('Error fetching products:', error);
