@@ -110,9 +110,10 @@ MEDIA_URL = '/media/'  # Not strictly needed with Cloudinary but safe
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
-    "https://www.silvercrowncreation.com",
-    "https://silver-crown-creation.onrender.com",
+    "https://silver-crown-creation-main.onrender.com",
+    "https://www.silvercrowncreation.com",  # or your frontend domain
 ]
+
 
 # Primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
