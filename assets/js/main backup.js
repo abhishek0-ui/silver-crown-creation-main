@@ -35,17 +35,13 @@ let products = [];
 
 const API_URL = "https://silver-crown-creation-main.onrender.com/api/products/";
 
-// Fetch products from API
 async function fetchProducts() {
   try {
     const res = await fetch(API_URL, {
       method: 'GET',
-      headers: {
-        'Cache-Control': 'no-cache'
-      },
-      cache: 'no-store' // ✅ Prevents browser and CDN caching
+      headers: { 'Cache-Control': 'no-cache' },
+      cache: 'no-store'
     });
-
     if (!res.ok) throw new Error('Network response was not ok');
     return await res.json();
   } catch (error) {
@@ -54,32 +50,26 @@ async function fetchProducts() {
   }
 }
 
-
-// Load products and initialize pages
 async function loadProductsFromAPI() {
-  try {
-    products = await fetchProducts();
+  products = await fetchProducts();
 
-    const shopPage = document.getElementById("shop-products");
-    const detailPage = document.getElementById("product-name");
+  const shopPage = document.getElementById("shop-products");
+  const detailPage = document.getElementById("product-name");
 
-    if (shopPage) {
-      generateShopCards(products);
-      setupFilters();
+  if (shopPage) {
+    generateShopCards(products);
+    setupFilters();
+    setupAddToCartButtons();
+  }
+
+  if (detailPage) {
+    const savedIndex = localStorage.getItem("productIndex");
+    if (savedIndex !== null) {
+      loadProduct(+savedIndex);
     }
-
-    if (detailPage) {
-      const savedIndex = localStorage.getItem("productIndex");
-      if (savedIndex !== null) {
-        loadProduct(savedIndex);
-      }
-    }
-  } catch (error) {
-    console.error("Failed to load products:", error);
   }
 }
 
-// Generate product cards for shop page
 function generateShopCards(filteredList = products) {
   const container = document.getElementById("shop-products");
   if (!container) return;
@@ -88,8 +78,7 @@ function generateShopCards(filteredList = products) {
 
   filteredList.forEach((product, index) => {
     const imageSrc = product.thumbnail || 'assets/images/placeholder.jpg';
-    const discountBadge = product.discount ? 
-      `<div class="product-label discount"><span>${product.discount}</span></div>` : '';
+    const discountBadge = product.discount ? `<div class="product-label discount"><span>${product.discount}</span></div>` : '';
 
     const card = document.createElement("div");
     card.className = "col-md-4 col-sm-6 mb-4";
@@ -106,13 +95,9 @@ function generateShopCards(filteredList = products) {
           </div>
         </figure>
         <div class="product-caption text-center">
-          <div class="product-identity">
-            <p class="manufacturer-name">Silver</p>
-          </div>
+          <div class="product-identity"><p class="manufacturer-name">Silver</p></div>
           <h6 class="product-name">
-            <a href="product-details.html" onclick="localStorage.setItem('productIndex', ${index})">
-              ${product.name}
-            </a>
+            <a href="product-details.html" onclick="localStorage.setItem('productIndex', ${index})">${product.name}</a>
           </h6>
           <div class="price-box">
             <span class="price-regular">₹${product.price}</span>
@@ -124,12 +109,10 @@ function generateShopCards(filteredList = products) {
       </div>`;
     container.appendChild(card);
   });
-
-  setupAddToCartButtons();
 }
 
 function setupAddToCartButtons() {
-  document.addEventListener('click', function(e) {
+  document.addEventListener('click', function (e) {
     const button = e.target.closest('.add-to-cart-btn');
     if (button) {
       e.preventDefault();
@@ -140,15 +123,15 @@ function setupAddToCartButtons() {
 }
 
 function addProductToCart(index) {
-  if (!products[index]) return;
-
   const product = products[index];
+  if (!product) return;
+
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
   const existingIndex = cart.findIndex(
     item => item.name === product.name &&
-           (item.size || '') === (product.size || '') &&
-           (item.color || '') === (product.color || '')
+      (item.size || '') === (product.size || '') &&
+      (item.color || '') === (product.color || '')
   );
 
   if (existingIndex === -1) {
@@ -170,11 +153,9 @@ function setupFilters() {
     const selectedColors = Array.from(colorCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
 
     let filtered = products;
-
     if (selectedSizes.length > 0) {
       filtered = filtered.filter(product => selectedSizes.includes(product.size));
     }
-
     if (selectedColors.length > 0) {
       filtered = filtered.filter(product => selectedColors.includes(product.color));
     }
@@ -186,10 +167,9 @@ function setupFilters() {
   colorCheckboxes.forEach(cb => cb.addEventListener("change", updateFilters));
 }
 
-async function loadProduct(index) {
-  if (!products[index]) return;
-
+function loadProduct(index) {
   const product = products[index];
+  if (!product) return;
 
   document.getElementById("product-name").textContent = product.name;
   document.getElementById("price").textContent = "₹" + product.price;
@@ -211,11 +191,9 @@ async function loadProduct(index) {
   }
 
   const stars = Math.min(5, Math.max(0, Math.round(product.rating || 0)));
-  document.getElementById("rating-stars").innerHTML =
-    '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
+  document.getElementById("rating-stars").innerHTML = '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
 
-  const rawNumber = product.whatsapp || '';
-  const phone = rawNumber.replace(/[^0-9]/g, '');
+  const phone = (product.whatsapp || '').replace(/[^0-9]/g, '');
   const whatsappBtn = document.getElementById("enquire-btn");
   if (whatsappBtn && phone) {
     whatsappBtn.href = `https://wa.me/${phone}`;
@@ -236,7 +214,7 @@ async function loadProduct(index) {
 function setupThumbnailNavigation() {
   const thumbsContainer = document.getElementById("thumbs");
   if (thumbsContainer) {
-    thumbsContainer.addEventListener("click", function(e) {
+    thumbsContainer.addEventListener("click", function (e) {
       if (e.target.tagName === "IMG") {
         const src = e.target.dataset.src;
         document.getElementById("main-image").src = src;
@@ -250,7 +228,7 @@ function setupThumbnailNavigation() {
 function setupWhatsAppButton() {
   const whatsappBtn = document.getElementById('whatsapp-btn');
   if (whatsappBtn) {
-    whatsappBtn.addEventListener('click', function(e) {
+    whatsappBtn.addEventListener('click', function (e) {
       e.preventDefault();
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       generateWhatsAppLink(cart);
@@ -279,46 +257,12 @@ function generateWhatsAppLink(cart) {
   window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
 }
 
+// ✅ Single initialization
 document.addEventListener("DOMContentLoaded", () => {
   loadProductsFromAPI();
   setupThumbnailNavigation();
   setupWhatsAppButton();
 });
-
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", async () => {
-  const shopPage = document.getElementById("shop-products");
-  const detailPage = document.getElementById("product-name");
-
-  if (!shopPage && !detailPage) return;
-
-  let products = [];
-  try {
-    const response = await fetch("https://silver-crown-creation-main.onrender.com/api/products/");
-    products = await response.json();
-  } catch (err) {
-    console.error("API fetch failed:", err);
-    return;
-  }
-
-  if (shopPage) {
-    generateShopCards(products);
-    setupAddToCartButtons();
-    setupFilters();
-  }
-
-  if (detailPage) {
-    const idx = localStorage.getItem("productIndex");
-    if (idx !== null && products[+idx]) {
-      loadProduct(products, +idx);
-    }
-  }
-})
-
 
 	// tooltip active js
 	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
