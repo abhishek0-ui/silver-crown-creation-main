@@ -1,5 +1,6 @@
 from django.db import models
 from cloudinary.models import CloudinaryField
+from django.db import models
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
@@ -9,6 +10,7 @@ class Product(models.Model):
     description = models.TextField()
     
     thumbnail = CloudinaryField('thumbnail', blank=True, null=True)
+    video_url = models.URLField(blank=True, null=True)
 
     stock = models.CharField(max_length=100)
     whatsapp = models.CharField(max_length=20)
