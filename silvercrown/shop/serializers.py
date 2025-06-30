@@ -3,24 +3,25 @@ from .models import Product, ProductImage
 
 class ProductImageSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
+    thumbnail = serializers.SerializerMethodField()
 
     def get_image(self, obj):
-        if obj.image:
-            return obj.image.url  # ✅ returns full Cloudinary URL
-        return None
+        return obj.image.url if obj.image else None
+
+    def get_thumbnail(self, obj):
+        return obj.thumbnail.url if obj.thumbnail else None
 
     class Meta:
         model = ProductImage
         fields = ['image', 'thumbnail']
+
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     thumbnail = serializers.SerializerMethodField()
 
     def get_thumbnail(self, obj):
-        if obj.thumbnail:
-            return obj.thumbnail.url  # ✅ returns full Cloudinary URL
-        return None
+        return obj.thumbnail.url if obj.thumbnail else None
 
     class Meta:
         model = Product
