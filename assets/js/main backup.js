@@ -33,7 +33,7 @@
 // Updated Product Page Script
 let products = [];
 
-const API_URL = "https://silver-crown-creation-main-1.onrender.com/api/products/";
+const API_URL = "https://silver-crown-creation-main.onrender.com/api/products/";
 
 // Fetch products from API
 async function fetchProducts() {
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let products = [];
   try {
-    const response = await fetch("https://silver-crown-creation-main-1.onrender.com/api/products/");
+    const response = await fetch("https://silver-crown-creation-main.onrender.com/api/products/");
     products = await response.json();
   } catch (err) {
     console.error("API fetch failed:", err);
