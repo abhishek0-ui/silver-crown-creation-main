@@ -38,17 +38,28 @@ const API_URL = "https://silver-crown-creation-main-1.onrender.com/api/products/
 async function fetchProducts() {
   try {
     const res = await fetch(API_URL, {
-      method: 'GET',
-      headers: { 'Cache-Control': 'no-cache' },
-      cache: 'no-store'
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache"
+      },
+      cache: "no-store"
     });
-    if (!res.ok) throw new Error('Network response was not ok');
-    return await res.json();
+
+    if (!res.ok) {
+      console.error(`Server responded with status: ${res.status}`);
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await res.json();
+    console.log("Fetched products:", data);  // ✅ for debugging
+    return data;
   } catch (error) {
     console.error('Error fetching products:', error);
     return [];
   }
 }
+
 
 async function loadProductsFromAPI() {
   products = await fetchProducts();
