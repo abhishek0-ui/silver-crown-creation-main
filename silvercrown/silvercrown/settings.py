@@ -12,7 +12,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-dev-key')
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    'silver-crown-creation-main-1.onrender.com',
+    'silver-crown-creation-main.onrender.com',
     'www.silvercrowncreation.com',
     'localhost',
     '127.0.0.1',
@@ -56,7 +56,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # ✅ for testing only — restrict in production
 
 CORS_ALLOWED_ORIGINS = [
     "https://www.silvercrowncreation.com",
-    "https://silver-crown-creation-main-1.onrender.com",
+    "https://silver-crown-creation-main.onrender.com",
 ]
 # URL configuration
 ROOT_URLCONF = 'silvercrown.urls'

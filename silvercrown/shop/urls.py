@@ -5,3 +5,7 @@ urlpatterns = [
     path('products/', product_list),   # API Endpoint
     path('', product_page),            # Optional frontend HTML
 ]
+
+
+
+
