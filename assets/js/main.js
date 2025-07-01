@@ -30,345 +30,147 @@
 
 
 	///shoppage and product  page js start here
+// Updated Product Page Script
+let products = [];
 
+const API_URL = "https://silver-crown-creation-main.onrender.com/api/products/";
 
-const products = [
-  {
-    name: "Golden Necklace Set",
-    size: "M",
-    color: "gold",
-    price: "₹12,500",
-    description: "Beautiful handcrafted golden necklace with matching earrings.",
-    images: ["assets/img/product/NK/FJNK-0154-ROSE-FRONTVIEW 1.jpg"],
-    thumbnail: "assets/img/product/NK/FJNK-0154-ROSE-FRONTVIEW 1.jpg",
-    rating: 4.5,
-    stock: "120 in stock",
-    whatsapp: "+918108942307",
-    // countdown: "2025-06-25T13:28:59"
-  },
-  {
-    name: "Silver Traditional Ring",
-    size: "S",
-    color: "silver",
-    price: "₹3,499",
-    description: "Elegant silver ring crafted for everyday wear.",
-    images: ["assets/img/product/ring/TRY-600X600.jpg"],
-    thumbnail: "assets/img/product/ring/TRY-600X600.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+918108942307",
-    countdown: "2025-07-01T10:00:00"
-  },
-  {
-    name: "Golden Traditional Ring",
-    size: "L",
-    color: "gold",
-    price: "₹3,499",
-    description: "Elegant gold ring crafted for everyday wear.",
-    images: ["assets/img/product/ring/product-details-img4.jpg"],
-    thumbnail: "assets/img/product/ring/TRY-600X600.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+918108942307",
-    countdown: "2025-07-01T10:00:00"
-  },
-  {
-    name: "Shiv Pendent",
-    size: "L",
-    color: "gold",
-    price: "₹3,499",
-    description: "Elegant gold ring crafted for everyday wear.",
-    images: ["assets/img/product/pendent/1k.jpg",
-		"assets/img/product/pendent/1k.jpg"
-	],
-    thumbnail: "assets/img/product/pendent/1k.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+918108942307",
-    countdown: "2025-07-01T10:00:00"
-  },
-   {
-    name: "Dear Pendent",
-    size: "L",
-    color: "gold",
-    price: "₹3,499",
-    description: "Elegant gold ring crafted for everyday wear.",
-    images: ["assets/img/product/pendent/hru.jpg",
-		"assets/img/product/pendent/hru-2.jpg",
-		"assets/img/product/pendent/hru-3.jpg",
-		"assets/img/product/pendent/hru-4.jpg",	
-	],
-    thumbnail: "assets/img/product/pendent/hru.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+919888888888",
-    countdown: "2025-07-01T10:00:00"
-  },
-  {
-    name: "Hanuman Pendent",
-    size: "L",
-    color: "gold",
-    price: "₹3,499",
-    description: "Elegant gold ring crafted for everyday wear.",
-    images: ["assets/img/product/pendent/hum.jpg"],
-    thumbnail: "assets/img/product/pendent/hum.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+919888888888",
-    countdown: "2025-07-01T10:00:00"
-  },
-  {
-    name: "Krishna Pendent",
-    size: "L",
-    color: "gold",
-    price: "₹3,499",
-    description: "Elegant gold ring crafted for everyday wear.",
-    images: ["assets/img/product/pendent/kk1.jpg",
-		"assets/img/product/pendent/kk2.jpg",
-		"assets/img/product/pendent/kk3.jpg",
-		"assets/img/product/pendent/kk4.jpg",
-	],
-    thumbnail: "assets/img/product/pendent/kk1.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+919888888888",
-    countdown: "2025-07-01T10:00:00"
-  },
-   {
-    name: "Lion Head Pendent",
-    size: "L",
-    color: "gold",
-    price: "₹3,499",
-    description: "Elegant gold ring crafted for everyday wear.",
-    images: ["assets/img/product/pendent/l1.jpg",
-		"assets/img/product/pendent/l2.jpg",
-		"assets/img/product/pendent/l3.jpg",
-	],
-    thumbnail: "assets/img/product/pendent/l1.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+919888888888",
-    countdown: "2025-07-01T10:00:00"
-  },
-  {
-	id: "spiral-ring",
-    name: "Spiral Ring",
-    size: "L",
-    color: ["gold","silver","rose gold"],
-    price: "₹3,499",
-    description: "Elegant gold ring crafted for everyday wear.",
-    images: ["assets/img/product/pendent/mq.jpg",
-		"assets/img/product/pendent/mq-3.jpg",
-		"assets/img/product/pendent/mq-52.jpg",
-		"assets/img/product/pendent/mq-523.jpg",
-		"assets/img/product/pendent/mq-526.jpg",
-	],
-    thumbnail: "assets/img/product/pendent/mq.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+919888888888",
-    countdown: "2025-07-01T10:00:00"
-  },
-   {
-    name: "Diamond Ring",
-    size: "L",
-    color: ["gold","silver","rose gold"],
-    price: "₹3,499",
-    description: "Elegant gold ring crafted for everyday wear.",
-    images: ["assets/img/product/pendent/r1.jpg",
-		"assets/img/product/pendent/r2.jpg",
-		"assets/img/product/pendent/r3.jpg",
-	],
-    thumbnail: "assets/img/product/pendent/r1.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+919888888888",
-    countdown: "2025-07-01T10:00:00",
-	 discount: "15%"
-  },  {
-    name: "Sai Baba Pendent",
-    size: "L",
-    color: ["gold","silver","rose gold"],
-    price: "₹3,499",
-    description: "Elegant gold ring crafted for everyday wear.",
-    images: ["assets/img/product/pendent/sai-1.jpg",
-		"assets/img/product/pendent/sai-2.jpg",
-	],
-    thumbnail: "assets/img/product/pendent/r1.jpg",
-    rating: 4.0,
-    stock: "50 in stock",
-    whatsapp: "+919888888888",
-    countdown: "2025-06-15T20:41:00+05:30",
-	 discount: "15%"
-  }
-];
+// ✅ Utility: Optimize Cloudinary URLs
+function optimizeCloudinaryURL(url) {
+  return url && url.includes('/upload/') ? url.replace('/upload/', '/upload/f_auto,q_auto/') : url;
+}
 
-// Load a product into your product detail page
-function loadProduct(index) {
-  const product = products[index];
-  document.getElementById("product-name").textContent = product.name;
-  document.getElementById("price").textContent = product.price;
-  document.getElementById("description").textContent = product.description;
-  document.getElementById("stock").textContent = product.stock;
-  document.getElementById("enquire-btn").href = `https://wa.me/${product.whatsapp}`;
-  document.getElementById("main-images").innerHTML = `<img src="${product.images[0]}" id="main-image">`;
+async function fetchProducts() {
+  try {
+    const res = await fetch(API_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
 
-  const thumbs = document.getElementById("thumbs");
-  thumbs.innerHTML = '';
-  product.images.forEach((img) => {
-    const thumb = document.createElement("div");
-    thumb.className = "pro-nav-thumb";
-    thumb.innerHTML = `<img src="${img}" data-src="${img}">`;
-    thumbs.appendChild(thumb);
-  });
+    if (!res.ok) {
+      console.error(`Server responded with status: ${res.status}`);
+      throw new Error('Network response was not ok');
+    }
 
-  setTimeout(() => {
-    document.querySelectorAll(".pro-nav-thumb img")[0]?.classList.add("active");
-  }, 0);
-
-  const stars = Math.round(product.rating);
-  document.getElementById("rating-stars").innerHTML =
-    '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
-
-  if (product.countdown) {
-    startCountdown(new Date(product.countdown).getTime());
+    const data = await res.json();
+    console.log("Fetched products:", data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return [];
   }
 }
 
-// Create product cards
+async function loadProductsFromAPI() {
+  products = await fetchProducts();
+
+  const shopPage = document.getElementById("shop-products");
+  const detailPage = document.getElementById("product-name");
+
+  if (shopPage) {
+    generateShopCards(products);
+    setupFilters();
+    setupAddToCartButtons();
+  }
+
+  if (detailPage) {
+    const savedIndex = localStorage.getItem("productIndex");
+    if (savedIndex !== null) {
+      loadProduct(+savedIndex);
+    }
+  }
+}
+
 function generateShopCards(filteredList = products) {
   const container = document.getElementById("shop-products");
+  if (!container) return;
+
   container.innerHTML = '';
+
   filteredList.forEach((product, index) => {
+    const imageSrc = optimizeCloudinaryURL(product.thumbnail) || 'assets/images/placeholder.jpg';
+    const discountBadge = product.discount ? `<div class="product-label discount"><span>${product.discount}</span></div>` : '';
+
     const card = document.createElement("div");
     card.className = "col-md-4 col-sm-6 mb-4";
-   card.innerHTML = `
-  <div class="product-item">
-    <figure class="product-thumb">
-      <a href="product-details.html" onclick="localStorage.setItem('productIndex', ${index})">
-        <img class="pri-img" src="${product.images[0]}" alt="product">
-        <img class="sec-img" src="${product.images[1] || product.images[0]}" alt="product">
-      </a>
-      <div class="product-badge">
-        <div class="product-label new"><span>new</span></div>
-        <div class="product-label discount"><span>${product.discount || ''}</span></div>
-      </div>
-      <div class="button-group">
-        <a href="wishlist.html"><i class="pe-7s-like"></i></a>
-        <a href="compare.html"><i class="pe-7s-refresh-2"></i></a>
-        <a href="#" data-bs-toggle="modal" data-bs-target="#quick_view"><i class="pe-7s-search"></i></a>
-      </div>
-    </figure>
-    <div class="product-caption text-center">
-      <div class="product-identity">
-        <p class="manufacturer-name"><a href="#">Jewels</a></p>
-      </div>
-      <h6 class="product-name"><a href="#">${product.name}</a></h6>
-      <div class="price-box">
-        <span class="price-regular">${product.price}</span>
-      </div>
-      <button class="btn btn-sm btn-primary mt-2 add-to-cart-btn" data-index="${index}">
-        <i class="fa fa-shopping-cart"></i> Add to Cart
-      </button>
-    </div>
-  </div>`;
+    card.innerHTML = `
+      <div class="product-item">
+        <figure class="product-thumb">
+          <a href="product-details.html" onclick="localStorage.setItem('productIndex', ${index})">
+            <img class="pri-img" src="${imageSrc}" alt="${product.name}">
+            <img class="sec-img" src="${imageSrc}" alt="${product.name}">
+          </a>
+          <div class="product-badge">
+            <div class="product-label new"><span>new</span></div>
+            ${discountBadge}
+          </div>
+        </figure>
+        <div class="product-caption text-center">
+          <div class="product-identity"><p class="manufacturer-name">Silver</p></div>
+          <h6 class="product-name">
+            <a href="product-details.html" onclick="localStorage.setItem('productIndex', ${index})">${product.name}</a>
+          </h6>
+          <div class="price-box">
+            <span class="price-regular">₹${product.price}</span>
+          </div>
+          <button class="btn btn-hero btn-primary mt-2 add-to-cart-btn" data-index="${index}">
+            <i class="fa fa-shopping-cart"></i> Add to Cart
+          </button>
+        </div>
+      </div>`;
     container.appendChild(card);
   });
 }
 
+function setupAddToCartButtons() {
+  document.addEventListener('click', function (e) {
+    const button = e.target.closest('.add-to-cart-btn');
+    if (button) {
+      e.preventDefault();
+      const index = button.dataset.index;
+      addProductToCart(index);
+    }
+  });
+}
 
-
-document.addEventListener("click", function (e) {
-  if (e.target.closest(".add-to-cart-btn")) {
-    const btn = e.target.closest(".add-to-cart-btn");
-    const index = btn.dataset.index;
-    const product = products[index];
-    let cart = JSON.parse(localStorage.getItem("cartItems")) || [];
-
-    cart.push({
-      name: product.name,
-      price: product.price,
-      quantity: 1,
-      thumbnail: product.images[0],
-      whatsapp: product.whatsapp
-    });
-
-    localStorage.setItem("cartItems", JSON.stringify(cart));
-    window.location.href = "cart.html";
-  }
-});
-
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const index = localStorage.getItem("productIndex");
-  if (index === null) return;
-
+function addProductToCart(index) {
   const product = products[index];
   if (!product) return;
 
-  // Enquire button event
-  const enquireBtn = document.getElementById("enquire-btn");
-  if (enquireBtn) {
-    enquireBtn.addEventListener("click", () => {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-      // Check if product already in cart
-      const existingIndex = cart.findIndex(p => p.name === product.name);
-      if (existingIndex !== -1) {
-        cart[existingIndex].quantity += 1;
-      } else {
-        cart.push({
-          name: product.name,
-          price: product.price,
-          thumbnail: product.images[0],
-          quantity: 1,
-          whatsapp: product.whatsapp,
-          color: product.color,
-          size: product.size
-        });
-      }
+  const existingIndex = cart.findIndex(
+    item => item.name === product.name &&
+      (item.size || '') === (product.size || '') &&
+      (item.color || '') === (product.color || '')
+  );
 
-      // Save updated cart
-      localStorage.setItem("cart", JSON.stringify(cart));
-
-      // Redirect to cart page
-      window.location.href = "cart.html";  // Change this to your actual cart page
-    });
+  if (existingIndex === -1) {
+    cart.push({ ...product, quantity: 1 });
+  } else {
+    cart[existingIndex].quantity += 1;
   }
-});
 
+  localStorage.setItem('cart', JSON.stringify(cart));
+  window.location.href = 'cart.html';
+}
 
-// Setup filters
 function setupFilters() {
-  const sizeCheckboxes = document.querySelectorAll(".size-filter").forEach(cb => cb.disabled = true);;
-  const colorCheckboxes = document.querySelectorAll(".color-filter").forEach(cb => cb.disabled = true);;
+  const sizeCheckboxes = document.querySelectorAll(".size-filter");
+  const colorCheckboxes = document.querySelectorAll(".color-filter");
 
   function updateFilters() {
-    const selectedSizes = Array.from(sizeCheckboxes)
-      .filter(cb => cb.checked)
-      .map(cb => cb.value);
-
-    const selectedColors = Array.from(colorCheckboxes)
-      .filter(cb => cb.checked)
-      .map(cb => cb.value);
+    const selectedSizes = Array.from(sizeCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+    const selectedColors = Array.from(colorCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
 
     let filtered = products;
-
-    // Filter by size
     if (selectedSizes.length > 0) {
       filtered = filtered.filter(product => selectedSizes.includes(product.size));
     }
-
-    // Filter by color
     if (selectedColors.length > 0) {
-      filtered = filtered.filter(product => {
-        const productColors = Array.isArray(product.color) ? product.color : [product.color];
-        return productColors.some(color => selectedColors.includes(color));
-      });
+      filtered = filtered.filter(product => selectedColors.includes(product.color));
     }
 
     generateShopCards(filtered);
@@ -378,135 +180,108 @@ function setupFilters() {
   colorCheckboxes.forEach(cb => cb.addEventListener("change", updateFilters));
 }
 
-// DOM Ready
-document.addEventListener("DOMContentLoaded", () => {
-  const detailPage = document.getElementById("product-name");
-  if (detailPage) {
-    const savedIndex = localStorage.getItem("productIndex") || 0;
-    loadProduct(savedIndex);
-  }
+function loadProduct(index) {
+  const product = products[index];
+  if (!product) return;
 
-  const shopPage = document.getElementById("shop-products");
-  if (shopPage) {
-    generateShopCards();
-    setupAddToCartButtons();
-    setupFilters();
-  }
-});
+  document.getElementById("product-name").textContent = product.name;
+  document.getElementById("price").textContent = "₹" + product.price;
+  document.getElementById("description").textContent = product.description || 'No description available';
+  document.getElementById("stock").textContent = product.stock || 'In Stock';
 
-// Thumbnail switching
-document.getElementById("thumbs")?.addEventListener("click", function (e) {
-  if (e.target.tagName === "IMG") {
-    const src = e.target.dataset.src;
-    document.getElementById("main-image").src = src;
-    document.querySelectorAll(".pro-nav-thumb img").forEach(img => img.classList.remove("active"));
-    e.target.classList.add("active");
-  }
-});
+  const mainImage = optimizeCloudinaryURL(product.images?.[0]?.image || product.thumbnail || 'assets/images/placeholder.jpg');
+  document.getElementById("main-images").innerHTML = `<img src="${mainImage}" id="main-image" />`;
 
-// Countdown logic
-document.addEventListener("DOMContentLoaded", function () {
-    const countdownEl = document.querySelector(".product-countdown");
-    const resetEvery24Hours = false; // Change to true to reset daily
-
-    let deadline = new Date(countdownEl.getAttribute("data-countdown")).getTime();
-
-    const update = () => {
-      const now = new Date().getTime();
-      let t = deadline - now;
-
-      if (t < 0) {
-        clearInterval(interval);
-
-        // Add fade-out animation
-        countdownEl.classList.add("fade-out");
-
-
-        // After animation, show "Time Expired" message
-        setTimeout(() => {
-			countdownEl.classList.remove("fade-out"); // Remove animation (optional)
-			countdownEl.innerHTML = `
-				<div style="text-align: center; font-weight: bold; font-size: 18px; color: red;">
-				⏰ Time Expired
-				</div>
-			`;
-			}, 1000);
-
-        // Reset countdown if enabled
-        if (resetEvery24Hours) {
-          deadline = now + 24 * 60 * 60 * 1000; // 24 hours from now
-          countdownEl.classList.remove("fade-out");
-          interval = setInterval(update, 1000);
-        }
-
-        return;
-      }
-
-      const days = Math.floor(t / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((t % (1000 * 60)) / 1000);
-
-      document.getElementById("day").textContent = days;
-      document.getElementById("hour").textContent = hours;
-      document.getElementById("minute").textContent = minutes;
-      document.getElementById("second").textContent = seconds;
-    };
-
-    let interval = setInterval(update, 1000);
-    update();
-  });
-
-///cart js
-
-function setupAddToCartButtons(productList) {
-  const buttons = document.querySelectorAll(".add-to-cart-btn");
-
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevent form/default behavior
-
-      const index = parseInt(btn.getAttribute("data-index"));
-      const product = productList[index];
-
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-      // ✅ Create a unique productId
-      const productId = [
-        product.name || "",
-        product.size || "",
-        product.color || "",
-        product.price || ""
-      ].map(val => val.toString().trim().toLowerCase()).join("-");
-
-      // ✅ Check if this product already exists in cart
-      const existingItem = cart.find(item => item.productId === productId);
-
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        cart.push({
-          productId, // ✅ Save the unique ID to compare later
-          name: product.name,
-          size: product.size || "",
-          color: product.color || "",
-          price: product.price,
-          quantity: 1,
-          thumbnail: product.thumbnail || (product.images && product.images[0]) || "",
-          whatsapp: product.whatsapp || ""
-        });
-      }
-
-      localStorage.setItem("cart", JSON.stringify(cart));
-
-      // Optional: Toast or alert
-      alert(`✅ ${product.name} added to cart!`);
+  const thumbs = document.getElementById("thumbs");
+  thumbs.innerHTML = '';
+  if (product.images && product.images.length > 0) {
+    product.images.forEach((img, i) => {
+      const thumbURL = optimizeCloudinaryURL(img.image);
+      const thumb = document.createElement("div");
+      thumb.className = "pro-nav-thumb";
+      thumb.innerHTML = `<img src="${thumbURL}" data-src="${thumbURL}" ${i === 0 ? 'class="active"' : ''} />`;
+      thumbs.appendChild(thumb);
     });
-  });
+  }
+
+  const stars = Math.min(5, Math.max(0, Math.round(product.rating || 0)));
+  document.getElementById("rating-stars").innerHTML = '<span>' + '★'.repeat(stars) + '☆'.repeat(5 - stars) + '</span>';
+
+  const phone = (product.whatsapp || '').replace(/[^0-9]/g, '');
+  const whatsappBtn = document.getElementById("enquire-btn");
+  if (whatsappBtn && phone) {
+    whatsappBtn.href = `https://wa.me/${phone}`;
+    whatsappBtn.style.display = 'inline-block';
+  } else if (whatsappBtn) {
+    whatsappBtn.style.display = 'none';
+  }
+
+  const detailsAddToCartBtn = document.getElementById('details-add-to-cart-btn');
+  if (detailsAddToCartBtn) {
+    detailsAddToCartBtn.onclick = (e) => {
+      e.preventDefault();
+      addProductToCart(index);
+    };
+  }
 }
 
+function setupThumbnailNavigation() {
+  const thumbsContainer = document.getElementById("thumbs");
+  if (thumbsContainer) {
+    thumbsContainer.addEventListener("click", function (e) {
+      if (e.target.tagName === "IMG") {
+        const src = e.target.dataset.src;
+        document.getElementById("main-image").src = src;
+        document.querySelectorAll(".pro-nav-thumb img").forEach(img => img.classList.remove("active"));
+        e.target.classList.add("active");
+      }
+    });
+  }
+}
 
-///ends here
+function setupWhatsAppButton() {
+  const whatsappBtn = document.getElementById('whatsapp-btn');
+  if (whatsappBtn) {
+    whatsappBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      generateWhatsAppLink(cart);
+    });
+  }
+}
+
+function generateWhatsAppLink(cart) {
+  if (!cart.length) {
+    alert('Your cart is empty!');
+    return;
+  }
+
+  let message = "Hello! I'm interested in these products:\n\n";
+  let total = 0;
+
+  cart.forEach(item => {
+    message += `- ${item.name} (${item.quantity}x) - ₹${item.price * item.quantity}\n`;
+    total += item.price * item.quantity;
+  });
+
+  message += `\nTotal: ₹${total}\n`;
+  message += "Please let me know about availability and payment options.";
+
+  const encodedMessage = encodeURIComponent(message);
+  window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+}
+
+// ✅ Initialize everything on DOM ready
+document.addEventListener("DOMContentLoaded", () => {
+  loadProductsFromAPI();
+  setupThumbnailNavigation();
+  setupWhatsAppButton();
+});
+
+
+
+
+
 
 
 
