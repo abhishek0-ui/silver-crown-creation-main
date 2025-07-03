@@ -57,7 +57,7 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = False  # ❌ Turn off for production
 CORS_ALLOWED_ORIGINS = [
     "https://dapper-medovik-26e9c9.netlify.app",  # ✅ Netlify domain
-    "https://silver-crown-creation-main.onrender.com",
+    "https://silver-crown-creation-main-2.onrender.com",
     "http://localhost:3000",  # optional for local testing
     "http://127.0.0.1:5500"
 ]
