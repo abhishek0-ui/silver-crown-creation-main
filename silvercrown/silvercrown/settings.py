@@ -14,8 +14,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-dev-key')
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    'silver-crown-creation-main.onrender.com',
-    'www.silvercrowncreation.com',
+    'silver-crown-creation-main-2.onrender.com',
+    'https://dapper-medovik-26e9c9.netlify.app',
     'localhost',
     '127.0.0.1',
 ]
